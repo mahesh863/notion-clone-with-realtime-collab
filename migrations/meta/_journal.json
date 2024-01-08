@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1704608667769,
+      "tag": "0000_chubby_lockheed",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1704608974696,
+      "tag": "0001_lucky_lady_deathstrike",
+      "breakpoints": true
+    }
+  ]
+}
