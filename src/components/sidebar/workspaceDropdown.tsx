@@ -4,6 +4,7 @@ import { workspace } from '@/lib/superbase/superbase.types';
 import React, { useEffect, useState } from 'react';
 import SelectedWorkspace from './selectedWorkspace';
 import CustomDialogTrigger from '../global/custom-dialog-trigger';
+import WorkspaceCreator from '../global/workspace-creator';
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: workspace[] | [];
@@ -113,7 +114,12 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
               content={<WorkspaceCreator />}
               description='Create a workspace to organize your files and folders, it gives you the power to collaborate with your friends and family.'
             >
-              <></>
+              <div className='flex transition-all hover:bg-muted justify-center items-center gap-2 p-2 w-full'>
+                <article className='text-slate-500 rounded-full bg-slate-800 w-4 h-4 flex justify-center items-center'>
+                  +
+                </article>
+                Create Workspace
+              </div>
             </CustomDialogTrigger>
           </div>
         </div>
