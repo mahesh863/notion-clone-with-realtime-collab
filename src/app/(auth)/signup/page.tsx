@@ -1,10 +1,5 @@
 'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
-import clsx from 'clsx';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,35 +8,40 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import Link from 'next/link';
-import Image from 'next/image';
-import Logo from '../../../../public/cypresslogo.svg';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import Loader from '@/components/laoder';
-import {
-  actionLoginUser,
-  actionSignupUser,
-} from '@/lib/server-actions/auth-actions';
+import { zodResolver } from '@hookform/resolvers/zod';
+import clsx from 'clsx';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import Logo from '../../../../public/cypresslogo.svg';
+import Loader from '@/components/global/laoder';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { MailCheck } from 'lucide-react';
+import { FormSchema } from '@/lib/types';
+import { actionSignUpUser } from '@/lib/server-actions/auth-actions';
 
 const SignUpFormSchema = z
   .object({
-    email: z.string().describe('Email').email({ message: 'Invalid email' }),
+    email: z.string().describe('Email').email({ message: 'Invalid Email' }),
     password: z
       .string()
       .describe('Password')
-      .min(6, { message: 'Password must be at least 6 characters long' }),
+      .min(6, 'Password must be minimum 6 characters'),
     confirmPassword: z
       .string()
       .describe('Confirm Password')
-      .min(6, { message: 'Password must be at least 6 characters long' }),
+      .min(6, 'Password must be minimum 6 characters'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords don't match.",
     path: ['confirmPassword'],
   });
+
 const Signup = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -60,26 +60,18 @@ const Signup = () => {
         'border-red-500/50': codeExchangeError,
         'text-red-700': codeExchangeError,
       }),
-    []
+    [codeExchangeError]
   );
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     mode: 'onChange',
     resolver: zodResolver(SignUpFormSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   });
 
-  const isLoading = form.formState.isLoading;
-  const onSubmit = async ({
-    email,
-    password,
-  }: z.infer<typeof SignUpFormSchema>) => {
-    const { error } = await actionSignupUser({ email, password });
-
+  const isLoading = form.formState.isSubmitting;
+  const onSubmit = async ({ email, password }: z.infer<typeof FormSchema>) => {
+    const { error } = await actionSignUpUser({ email, password });
     if (error) {
       setSubmitError(error.message);
       form.reset();
@@ -96,21 +88,23 @@ const Signup = () => {
         }}
         onSubmit={form.handleSubmit(onSubmit)}
         className='w-full sm:justify-center sm:w-[400px]
-        space-y-6 flex  flex-col
+        space-y-6 flex
+        flex-col
         '
       >
         <Link
           href='/'
           className='
-            w-full
-            flex
-            justify-left
-            items-center
-            
-            '
+          w-full
+          flex
+          justify-left
+          items-center'
         >
-          <Image src={Logo} alt='logo' width={50} height={50} />
-          <span className='font-semibold dark:text-white text-4xl first-letter:ml-2'>
+          <Image src={Logo} alt='cypress Logo' width={50} height={50} />
+          <span
+            className='font-semibold
+          dark:text-white text-4xl first-letter:ml-2'
+          >
             cypress.
           </span>
         </Link>
@@ -120,7 +114,6 @@ const Signup = () => {
         >
           An all-In-One Collaboration and Productivity Platform
         </FormDescription>
-
         {!confirmation && !codeExchangeError && (
           <>
             <FormField
@@ -166,28 +159,28 @@ const Signup = () => {
                 </FormItem>
               )}
             />
-            {submitError && <FormMessage>{submitError}</FormMessage>}
-
             <Button type='submit' className='w-full p-6' disabled={isLoading}>
               {!isLoading ? 'Create Account' : <Loader />}
             </Button>
           </>
         )}
-        <span className='self-center'>
-          Already have an account ?{' '}
-          <Link href={'/login'} className='text-primary'>
+
+        {submitError && <FormMessage>{submitError}</FormMessage>}
+        <span className='self-container'>
+          Already have an account?{' '}
+          <Link href='/login' className='text-primary'>
             Login
           </Link>
         </span>
-        {confirmation && codeExchangeError && (
+        {(confirmation || codeExchangeError) && (
           <>
             <Alert className={confirmationAndErrorStyles}>
               {!codeExchangeError && <MailCheck className='h-4 w-4' />}
               <AlertTitle>
-                {codeExchangeError ? 'Invalid link' : 'Check your email'}
+                {codeExchangeError ? 'Invalid Link' : 'Check your email.'}
               </AlertTitle>
               <AlertDescription>
-                {codeExchangeError || 'An Email confirmation has been sent'}
+                {codeExchangeError || 'An email confirmation has been sent.'}
               </AlertDescription>
             </Alert>
           </>

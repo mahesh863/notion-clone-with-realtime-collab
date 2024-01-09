@@ -15,6 +15,13 @@
       "when": 1704608974696,
       "tag": "0001_lucky_lady_deathstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1704783453382,
+      "tag": "0002_talented_namor",
+      "breakpoints": true
     }
   ]
 }
